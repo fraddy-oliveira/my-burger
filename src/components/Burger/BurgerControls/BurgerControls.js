@@ -14,7 +14,13 @@ const builderControls = props => {
         <div className={classes.BurgerControls}>
             {
                 controls.map(ingred => (
-                    <BurgerControl key={ingred.type} label={ingred.label} />
+                    <BurgerControl
+                        key={ingred.type}
+                        label={ingred.label}
+                        type={ingred.type}
+                        addIngredient={props.addIngredient}
+                        removeIngredient={props.removeIngredient}
+                    />
                 ))
             }
         </div>
