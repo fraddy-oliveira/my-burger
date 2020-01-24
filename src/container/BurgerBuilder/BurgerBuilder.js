@@ -4,7 +4,7 @@ import Burger from './../../components/Burger/Burger'
 import BurgerControls from './../../components/Burger/BurgerControls/BurgerControls'
 
 const INGREDIENTS_PRICE = {
-    'salad': 0.3,
+    'salad': 0.1,
     'meat': 0.7,
     'cheese': 1,
     'bacon': 0.9
@@ -57,12 +57,19 @@ class BurgerBuilder extends Component {
     }
 
     render() {
+
+        const disableInfo = { ...this.state.ingredients }
+
+        Object.keys(disableInfo).map(type => disableInfo[type] = disableInfo[type] <= 0)
+
         return (
             <Aux>
                 <Burger ingredients={this.state.ingredients} />
                 <BurgerControls
                     addIngredient={this.addIngredientHandler}
                     removeIngredient={this.removeIngredientHandler}
+                    price={this.state.totalPrice}
+                    disableInfo={disableInfo}
                 />
             </Aux>
         )

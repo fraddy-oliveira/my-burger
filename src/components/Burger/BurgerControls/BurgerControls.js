@@ -10,8 +10,10 @@ const controls = [
 ]
 
 const builderControls = props => {
+    Object.keys(props.disableInfo)
     return (
         <div className={classes.BurgerControls}>
+            <p>Current price: <strong>{props.price.toFixed(2)}</strong></p>
             {
                 controls.map(ingred => (
                     <BurgerControl
@@ -20,6 +22,7 @@ const builderControls = props => {
                         type={ingred.type}
                         addIngredient={props.addIngredient}
                         removeIngredient={props.removeIngredient}
+                        disabled={props.disableInfo[ingred.type]}
                     />
                 ))
             }
