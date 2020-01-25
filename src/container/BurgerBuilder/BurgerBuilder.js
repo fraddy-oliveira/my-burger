@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Aux from './../../hoc/Aux'
 import Burger from './../../components/Burger/Burger'
 import BurgerControls from './../../components/Burger/BurgerControls/BurgerControls'
+import Modal from './../../components/UI/Modal/Modal'
+import OrderSummary from './../../components/OrderSummary/OrderSummary'
 
 const INGREDIENTS_PRICE = {
     'salad': 0.1,
@@ -21,7 +23,8 @@ class BurgerBuilder extends Component {
                 'cheese': 0,
                 'bacon': 0
             },
-            totalPrice: 4
+            totalPrice: 4,
+            purchasable: false
         }
     }
 
@@ -36,6 +39,8 @@ class BurgerBuilder extends Component {
         totalPrice = totalPrice + INGREDIENTS_PRICE[type]
 
         this.setState({ ingredients: ingredients, totalPrice: totalPrice })
+
+        this.updatePurchasable(ingredients)
     }
 
     removeIngredientHandler = (type) => {
@@ -54,6 +59,16 @@ class BurgerBuilder extends Component {
         totalPrice = totalPrice - INGREDIENTS_PRICE[type]
 
         this.setState({ ingredients: ingredients, totalPrice: totalPrice })
+
+        this.updatePurchasable(ingredients)
+    }
+
+    updatePurchasable(ingredients) {
+        let sum = Object.keys(ingredients)
+            .map(igKey => ingredients[igKey])
+            .reduce((sum, val) => sum + val, 0)
+
+        this.setState({ purchasable: sum > 0 })
     }
 
     render() {
@@ -64,12 +79,16 @@ class BurgerBuilder extends Component {
 
         return (
             <Aux>
+                <Modal>
+                    <OrderSummary ingredients={this.state.ingredients} />
+                </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BurgerControls
                     addIngredient={this.addIngredientHandler}
                     removeIngredient={this.removeIngredientHandler}
                     price={this.state.totalPrice}
                     disableInfo={disableInfo}
+                    enableOrder={this.state.purchasable}
                 />
             </Aux>
         )

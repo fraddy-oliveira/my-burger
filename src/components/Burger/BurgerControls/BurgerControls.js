@@ -10,7 +10,7 @@ const controls = [
 ]
 
 const builderControls = props => {
-    Object.keys(props.disableInfo)
+
     return (
         <div className={classes.BurgerControls}>
             <p>Current price: <strong>{props.price.toFixed(2)}</strong></p>
@@ -26,6 +26,7 @@ const builderControls = props => {
                     />
                 ))
             }
+            <button className={classes.OrderButton} disabled={!props.enableOrder} >Order Now</button>
         </div>
     )
 }
