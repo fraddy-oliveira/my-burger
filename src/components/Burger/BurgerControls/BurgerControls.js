@@ -3,10 +3,10 @@ import classes from './BurgerControls.css'
 import BurgerControl from './BuildControl/BuildControl'
 
 const controls = [
-    { label: "Meat", type: "meat" },
-    { label: "Cheese", type: "cheese" },
     { label: "Salad", type: "salad" },
-    { label: "Bacon", type: "bacon" }
+    { label: "Bacon", type: "bacon" },
+    { label: "Cheese", type: "cheese" },
+    { label: "Meat", type: "meat" }
 ]
 
 const builderControls = props => {
