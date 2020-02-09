@@ -8,14 +8,24 @@ const errorHandler = (WrapperComponent, axios) => {
         state = {
             error: false
         }
-        componentDidMount() {
-            axios.interceptors.request.use(req => {
+        reqInterceptors = null
+        resInterceptors = null
+
+        componentWillMount() {
+            this.reqInterceptors = axios.interceptors.request.use(req => {
                 this.setState({ error: false })
                 return req
             })
-            axios.interceptors.response.use(null, error => {
+            this.resInterceptors = axios.interceptors.response.use(null, error => {
                 this.setState({ error: error })
             })
+        }
+
+
+
+        componentWillUnmount() {
+            axios.interceptors.request.eject(this.reqInterceptors)
+            axios.interceptors.response.eject(this.resInterceptors)
         }
 
         errorPopUpHandler = () => {
