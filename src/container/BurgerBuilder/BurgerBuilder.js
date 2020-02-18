@@ -81,25 +81,6 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        /*
-        this.setState({ loading: true })
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: "Tester",
-                email: "test@mail.com"
-            },
-            deliveryMethod: "Bike"
-        }
-        axiosInstance.post("/orders.json", order).then(data => {
-            this.setState({ loading: false, purchasing: false })
-            console.log("Order posting success")
-        }).catch(error => {
-            this.setState({ loading: false })
-            console.log("Order posting failed", error)
-        })
-        */
 
         let queryParams = []
 
@@ -108,6 +89,8 @@ class BurgerBuilder extends Component {
                 encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i])
             )
         }
+
+        queryParams.push("price=" + this.state.totalPrice)
 
         const queryStr = queryParams.join("&")
 

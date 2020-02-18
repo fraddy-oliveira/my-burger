@@ -8,12 +8,8 @@ class Checkout extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            ingredients: {
-                'salad': 1,
-                'meat': 0,
-                'cheese': 1,
-                'bacon': 0
-            }
+            ingredients: null,
+            totalPrice: 0
         }
     }
 
@@ -25,15 +21,19 @@ class Checkout extends Component {
         this.props.history.replace(this.props.match.url + "/contact-data")
     }
 
-    componentDidMount() {
+    componentWillMount() {
         let searchParams = new URLSearchParams(this.props.location.search)
         let ingredients = {}
-
+        let price = 0;
         for (let param of searchParams.entries()) {
-            ingredients[param[0]] = +param[1]
+            if (param[0] === 'price') {
+                price = +param[1]
+            } else {
+                ingredients[param[0]] = +param[1]
+            }
         }
 
-        this.setState({ ingredients: ingredients })
+        this.setState({ ingredients: ingredients, totalPrice: price })
     }
 
     render() {
@@ -46,8 +46,17 @@ class Checkout extends Component {
                 />
                 <Route
                     path={this.props.match.url + "/contact-data"}
-                    component={ContactData}
+                    render={
+                        (props) => (
+                            <ContactData
+                                ingredients={this.state.ingredients}
+                                totalPrice={this.state.totalPrice}
+                                {...props}
+                            />
+                        )
+                    }
                 />
+
             </div>
         )
     }
