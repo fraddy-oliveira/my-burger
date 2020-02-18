@@ -81,6 +81,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
+        /*
         this.setState({ loading: true })
         const order = {
             ingredients: this.state.ingredients,
@@ -98,7 +99,22 @@ class BurgerBuilder extends Component {
             this.setState({ loading: false })
             console.log("Order posting failed", error)
         })
+        */
 
+        let queryParams = []
+
+        for (let i in this.state.ingredients) {
+            queryParams.push(
+                encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i])
+            )
+        }
+
+        const queryStr = queryParams.join("&")
+
+        this.props.history.push({
+            pathname: "/checkout",
+            search: "?" + queryStr
+        })
     }
 
     componentDidMount() {
