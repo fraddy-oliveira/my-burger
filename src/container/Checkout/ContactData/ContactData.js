@@ -20,13 +20,13 @@ class ContactData extends Component {
 
     render() {
         return (
-            <div class={classes.ContactData}>
+            <div className={classes.ContactData}>
                 <h4>Enter your contact details below:</h4>
                 <form>
-                    <input class={classes.Input} type="text" name="name" />
-                    <input class={classes.Input} type="text" name="email" />
-                    <input class={classes.Input} type="text" name="street" />
-                    <input class={classes.Input} type="text" name="postalCode" />
+                    <input className={classes.Input} type="text" name="name" />
+                    <input className={classes.Input} type="text" name="email" />
+                    <input className={classes.Input} type="text" name="street" />
+                    <input className={classes.Input} type="text" name="postalCode" />
                     <Button btnType="Success" clicked>Order</Button>
                 </form>
             </div>
