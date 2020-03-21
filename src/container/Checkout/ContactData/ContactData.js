@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Button from './../../../components/UI/Button/Button';
 import Spinner from './../../../components/UI/Spinner/Spinner';
 import axiosInstance from './../../../axios-orders';
+import Input from './../../../components/UI/Input/Input';
 
 import classes from './ContactData.css';
 
@@ -53,48 +54,44 @@ class ContactData extends Component {
     } else if (event.target.name === 'email') {
       this.setState({ email: event.target.value });
     } else if (event.target.name === 'street') {
-      let address = { ...this.state.address };
-      address.street = event.target.value;
-
-      this.setState({ address: address });
+      this.setState({
+        address: {
+          ...this.state.address,
+          street: event.target.value,
+        },
+      });
     } else if (event.target.name === 'postalCode') {
-      let address = { ...this.state.address };
-      address.postalCode = event.target.value;
-
-      this.setState({ address: address });
+      this.setState({
+        address: {
+          ...this.state.address,
+          postalCode: event.target.value,
+        },
+      });
     }
   };
 
   render() {
     let form = (
       <form>
-        <input
-          className={classes.Input}
-          type="text"
+        <Input
           name="name"
           value={this.state.name}
-          onChange={this.formInputHandler}
+          changeHandler={this.formInputHandler}
         />
-        <input
-          className={classes.Input}
-          type="text"
+        <Input
           name="email"
           value={this.state.email}
-          onChange={this.formInputHandler}
+          changeHandler={this.formInputHandler}
         />
-        <input
-          className={classes.Input}
-          type="text"
+        <Input
           name="street"
           value={this.state.address.street}
-          onChange={this.formInputHandler}
+          changeHandler={this.formInputHandler}
         />
-        <input
-          className={classes.Input}
-          type="text"
+        <Input
           name="postalCode"
           value={this.state.address.postalCode}
-          onChange={this.formInputHandler}
+          changeHandler={this.formInputHandler}
         />
         <Button btnType="Success" clicked={this.orderHandler}>
           ORDER
