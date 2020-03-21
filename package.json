@@ -69,7 +69,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "prettify": "prettier --config ./.prettierrc.js --write --list-different \"*/**/*.{js,json,ts,tsx,css,md,scss}\" "
+    "prettify": "prettier --config ./.prettierrc.js --ignore-path ./.prettierignore --write --list-different \"*/**/*.{js,json,ts,tsx,css,md,scss}\" "
   },
   "eslintConfig": {
     "extends": "react-app"
