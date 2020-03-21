@@ -10,7 +10,7 @@ const Input = props => {
     default:
       inputElement = (
         <input
-          className={classes.Input}
+          className={classes.InputElement}
           name={props.name}
           value={props.value}
           onChange={props.changeHandler}
@@ -20,10 +20,12 @@ const Input = props => {
       break;
   }
 
-  let label = props.label ? <label>{props.label}</label> : null;
+  let label = props.label ? (
+    <label className={classes.Label}>{props.label}</label>
+  ) : null;
 
   return (
-    <div className={classes.Root}>
+    <div className={classes.Input}>
       {label}
       {inputElement}
     </div>
