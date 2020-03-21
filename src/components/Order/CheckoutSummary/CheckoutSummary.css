@@ -1,17 +1,17 @@
-.CheckoutSummary{
-    width:80%;
-    margin:auto;
-    text-align:center;
+.CheckoutSummary {
+  width: 80%;
+  margin: auto;
+  text-align: center;
 }
 
-.Ingredients{
-    width: 300px;
-    height: 300px;
-    margin: auto;
+.Ingredients {
+  width: 300px;
+  height: 300px;
+  margin: auto;
 }
 
-@media (min-width:600px){
-    .CheckoutSummary{
-        width: 500px;
-    }
+@media (min-width: 600px) {
+  .CheckoutSummary {
+    width: 500px;
+  }
 }
