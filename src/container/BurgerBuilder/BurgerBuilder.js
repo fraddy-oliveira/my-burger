@@ -104,7 +104,14 @@ class BurgerBuilder extends Component {
     axiosInstance
       .get('/ingredients.json')
       .then(response => {
-        this.setState({ ingredients: response.data });
+        this.setState(
+          prevState => {
+            return { ingredients: response.data };
+          },
+          () => {
+            this.updatePurchasable({ ...this.state.ingredients });
+          }
+        );
       })
       .catch(err => {
         this.setState({ error: true });
