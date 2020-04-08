@@ -20,8 +20,8 @@ const builderControls = props => {
           key={ingred.type}
           label={ingred.label}
           type={ingred.type}
-          addIngredient={props.addIngredient}
-          removeIngredient={props.removeIngredient}
+          addIngredient={() => props.addIngredient(ingred.type)}
+          removeIngredient={() => props.removeIngredient(ingred.type)}
           disabled={props.disableInfo[ingred.type]}
         />
       ))}
