@@ -136,7 +136,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-      }
+      },
     };
   }
 
@@ -177,7 +177,7 @@ class ContactData extends Component {
 
     const order = {
       ingredients: this.props.ing,
-      price: this.props.totalPrice,
+      price: Number(this.props.totalPrice).toFixed(2),
       customer: { ...formData },
     };
 
@@ -247,7 +247,7 @@ const mapStateToProps = state => {
   return {
     ing: state.burger.ingredients,
     totalPrice: state.burger.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
   };
 };
 
