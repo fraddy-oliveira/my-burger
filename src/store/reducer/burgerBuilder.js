@@ -13,40 +13,54 @@ const INGREDIENTS_PRICE = {
   bacon: 0.9,
 };
 
+const addIngredients = (state, action) => {
+  return {
+    ...state,
+    ingredients: {
+      ...state.ingredients,
+      [action.ingredientCode]: state.ingredients[action.ingredientCode] + 1,
+    },
+    totalPrice: state.totalPrice + INGREDIENTS_PRICE[action.ingredientCode],
+  };
+};
+
+const removeIngredients = (state, action) => {
+  return {
+    ...state,
+    ingredients: {
+      ...state.ingredients,
+      [action.ingredientCode]: state.ingredients[action.ingredientCode] - 1,
+    },
+    totalPrice: state.totalPrice - INGREDIENTS_PRICE[action.ingredientCode],
+  };
+};
+
+const setIngredients = (state, action) => {
+  return {
+    ...state,
+    ingredients: { ...action.ingredients },
+    totalPrice: 4,
+    error: false,
+  };
+};
+
+const fetchIngredientsFailed = (state, action) => {
+  return {
+    ...state,
+    error: true,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_INGREDIENTS:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingredientCode]: state.ingredients[action.ingredientCode] + 1,
-        },
-        totalPrice: state.totalPrice + INGREDIENTS_PRICE[action.ingredientCode],
-      };
-
+      return addIngredients(state, action);
     case actionTypes.REMOVE_INGREDIENTS:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingredientCode]: state.ingredients[action.ingredientCode] - 1,
-        },
-        totalPrice: state.totalPrice - INGREDIENTS_PRICE[action.ingredientCode],
-      };
-
+      return removeIngredients(state, action);
     case actionTypes.SET_INGREDIENTS:
-      return {
-        ...state,
-        ingredients: { ...action.ingredients },
-        totalPrice: 4,
-        error: false,
-      };
+      return setIngredients(state, action);
     case actionTypes.FETCH_INGREDIENTS_FAILED:
-      return {
-        ...state,
-        error: true,
-      };
+      return fetchIngredientsFailed(state, action);
     default:
       return state;
   }
