@@ -5,6 +5,8 @@ import Button from './../../../components/UI/Button/Button';
 import Spinner from './../../../components/UI/Spinner/Spinner';
 import axiosInstance from './../../../axios-orders';
 import Input from './../../../components/UI/Input/Input';
+import * as actionCreators from '../../../store/actions/index';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 
 import classes from './ContactData.css';
 
@@ -134,8 +136,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-      },
-      loading: false,
+      }
     };
   }
 
@@ -174,25 +175,13 @@ class ContactData extends Component {
       formData[fieldName] = orderForm[fieldName].value;
     }
 
-    this.setState({ loading: true });
-
     const order = {
       ingredients: this.props.ing,
       price: this.props.totalPrice,
       customer: { ...formData },
     };
 
-    axiosInstance
-      .post('/orders.json', order)
-      .then(data => {
-        this.setState({ loading: false });
-        console.log('Order posting success');
-        this.props.history.push('/');
-      })
-      .catch(error => {
-        this.setState({ loading: false });
-        console.log('Order posting failed', error);
-      });
+    this.props.purchaseBurger(order);
   };
 
   formInputHandler = event => {
@@ -242,7 +231,7 @@ class ContactData extends Component {
         <Button btnType="Success">ORDER</Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -258,7 +247,18 @@ const mapStateToProps = state => {
   return {
     ing: state.ingredients,
     totalPrice: state.totalPrice,
+    loading: state.loading
   };
 };
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = dispatch => {
+  return {
+    purchaseBurger: orderData =>
+      dispatch(actionCreators.purchaseBurger(orderData)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axiosInstance));
