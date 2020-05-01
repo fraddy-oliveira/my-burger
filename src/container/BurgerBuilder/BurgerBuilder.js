@@ -9,7 +9,7 @@ import OrderSummary from './../../components/OrderSummary/OrderSummary';
 import axiosInstance from './../../axios-orders';
 import Spinner from './../../components/UI/Spinner/Spinner';
 import withErrorHandler from './../../hoc/withErrorHandler/withErrorHandler';
-import * as burgerBuilderActions from '../../store/actions/index';
+import * as actionCreators from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
   constructor(props) {
@@ -36,29 +36,11 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
+    this.props.purchaseBurgerInit();
     this.props.history.push('/checkout');
   };
 
   componentDidMount() {
-    // axiosInstance
-    //   .get('/ingredients.json')
-    //   .then(response => {
-    //     if (response && response.data) {
-    //       this.setState(
-    //         prevState => ({
-    //           ingredients: response.data,
-    //         }),
-    //         () => {
-    //           this.updatePurchasable({ ...this.props.ings });
-    //         }
-    //       );
-    //     } else {
-    //       throw new Error();
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.setState({ error: true });
-    //   });
     this.props.initIngredients();
   }
 
@@ -126,11 +108,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addIngredient: ingCode =>
-      dispatch(burgerBuilderActions.addIngredient(ingCode)),
+    addIngredient: ingCode => dispatch(actionCreators.addIngredient(ingCode)),
     removeIngredient: ingCode =>
-      dispatch(burgerBuilderActions.removeIngredient(ingCode)),
-    initIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
+      dispatch(actionCreators.removeIngredient(ingCode)),
+    initIngredients: () => dispatch(actionCreators.initIngredients()),
+    purchaseBurgerInit: () => dispatch(actionCreators.purchaseBurgerInit()),
   };
 };
 
