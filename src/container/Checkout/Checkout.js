@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import CheckoutSummary from './../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
+import * as actionCreators from '../../store/actions/index';
 
 class Checkout extends Component {
   cancelCheckoutHandler = () => {
@@ -15,6 +16,7 @@ class Checkout extends Component {
   };
 
   componentWillMount() {
+    this.props.purchaseBurgerInit();
     // let searchParams = new URLSearchParams(this.props.location.search);
     // let ingredients = {};
     // let price = 0;
@@ -31,8 +33,10 @@ class Checkout extends Component {
   render() {
     let summary = <Redirect to="/" />;
     if (this.props.ing) {
+      let purchasedDone = this.props.purchased ? <Redirect to="/" /> : null;
       summary = (
         <div>
+          {purchasedDone}
           <CheckoutSummary
             ingredients={this.props.ing}
             cancelCheckout={this.cancelCheckoutHandler}
@@ -52,8 +56,15 @@ class Checkout extends Component {
 
 const mapStateToProps = state => {
   return {
-    ing: state.ingredients,
+    ing: state.burger.ingredients,
+    purchased: state.order.purchased,
   };
 };
 
-export default connect(mapStateToProps)(Checkout);
+const mapDispatchToProps = dispatch => {
+  return {
+    purchaseBurgerInit: () => dispatch(actionCreators.purchaseBurgerInit()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
