@@ -9,6 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import reducerBurgerBuilder from './store/reducer/burgerBuilder';
 import reducerOrders from './store/reducer/orders';
+import reducerAuth from './store/reducer/auth';
 
 const composeEnhancers =
   (typeof window != 'undefined' &&
@@ -18,6 +19,7 @@ const composeEnhancers =
 const reducer = combineReducers({
   burger: reducerBurgerBuilder,
   order: reducerOrders,
+  auth: reducerAuth,
 });
 
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
