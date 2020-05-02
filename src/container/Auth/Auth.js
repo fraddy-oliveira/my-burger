@@ -5,6 +5,7 @@ import * as forms from '../../utils/forms';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import * as actions from '../../store/actions/index';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 import classes from './Auth.css';
 
@@ -106,6 +107,7 @@ class Auth extends Component {
   };
 
   render() {
+    let errorMessage = this.props.error;
     let form = (
       <form onSubmit={this.submitHandler}>
         {Object.keys(this.state.controls).map(fieldName => {
@@ -120,11 +122,16 @@ class Auth extends Component {
             />
           );
         })}
+        <div className={classes.AuthError}>{errorMessage}</div>
         <div>
           <Button btnType="Success">SUBMIT</Button>
         </div>
       </form>
     );
+
+    if (this.props.loading) {
+      form = <Spinner />;
+    }
 
     let formTitle = this.state.isSignUp ? 'Sign Up' : 'Sign In';
 
@@ -142,6 +149,13 @@ class Auth extends Component {
   }
 }
 
+const mapStatetoProps = state => {
+  return {
+    error: state.auth.error,
+    loading: state.auth.loading,
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     auth: (email, password, isSignUp) =>
@@ -149,4 +163,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStatetoProps, mapDispatchToProps)(Auth);
