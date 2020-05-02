@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import * as forms from '../../utils/forms';
+import { connect } from 'react-redux';
 
+import * as forms from '../../utils/forms';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
+import * as actions from '../../store/actions/index';
 
 import classes from './Auth.css';
 
@@ -65,6 +67,10 @@ class Auth extends Component {
     for (let fieldName in controls) {
       formData[fieldName] = controls[fieldName].value;
     }
+
+    const { email, password } = formData;
+
+    this.props.auth(email, password);
   };
 
   formInputHandler = event => {
@@ -122,4 +128,10 @@ class Auth extends Component {
   }
 }
 
-export default Auth;
+const mapDispatchToProps = dispatch => {
+  return {
+    auth: (email, password) => dispatch(actions.auth(email, password)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Auth);
