@@ -11,7 +11,8 @@ import reducerBurgerBuilder from './store/reducer/burgerBuilder';
 import reducerOrders from './store/reducer/orders';
 
 const composeEnhancers =
-  (typeof window != undefined && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  (typeof window != 'undefined' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
   compose;
 
 const reducer = combineReducers({
@@ -19,10 +20,7 @@ const reducer = combineReducers({
   order: reducerOrders,
 });
 
-const store = createStore(
-  reducer,
-  composeEnhancers(applyMiddleware(thunk))
-);
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
 
 const app = (
   <Provider store={store}>
