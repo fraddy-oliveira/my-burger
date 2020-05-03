@@ -36,7 +36,7 @@ export const auth = (email, password, isSignUp) => {
     if (!isSignUp) {
       url =
         'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDmkLBPWHuVuodRcrVaKhz5oUB9xYkkP84';
-      delete data.returnSecureToken;
+      //delete data.returnSecureToken;
     }
 
     dispatch(authStart());
@@ -44,9 +44,9 @@ export const auth = (email, password, isSignUp) => {
       .post(url, data)
       .then(response => {
         console.log('auth response', response);
-        const { idToken, localId } = response.data;
+        const { idToken, localId, expiresIn } = response.data;
         dispatch(authSuccess(idToken, localId));
-        dispatch(authExpirationTime(2));
+        dispatch(authExpirationTime(expiresIn));
       })
       .catch(error => {
         console.log('Auth error', error.response);
