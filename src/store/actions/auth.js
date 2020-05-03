@@ -93,3 +93,10 @@ export const authExpirationTime = expiryTimeSeconds => {
     }, expiryTimeSeconds * 1000);
   };
 };
+
+export const setAuthRedirectURL = path => {
+  return {
+    type: actionTypes.AUTH_SET_REDIRECT_URL,
+    path: path ? path : '/',
+  };
+};

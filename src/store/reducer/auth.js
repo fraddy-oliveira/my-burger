@@ -5,6 +5,7 @@ const initialState = {
   userId: null,
   loading: false,
   error: null,
+  authRedirectUrl: '/',
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,6 +32,11 @@ const reducer = (state = initialState, action) => {
         userId: null,
         loading: false,
         error: null,
+      };
+    case actionTypes.AUTH_SET_REDIRECT_URL:
+      return {
+        ...state,
+        authRedirectUrl: action.path,
       };
     default:
       return state;
