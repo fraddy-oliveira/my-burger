@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import * as forms from '../../utils/forms';
 import Input from '../../components/UI/Input/Input';
@@ -108,6 +109,12 @@ class Auth extends Component {
 
   render() {
     let errorMessage = this.props.error;
+    let successLoginRedirect = null;
+
+    if (this.props.isAuthenticated) {
+      successLoginRedirect = <Redirect to="/" />;
+    }
+
     let form = (
       <form onSubmit={this.submitHandler}>
         {Object.keys(this.state.controls).map(fieldName => {
@@ -137,6 +144,7 @@ class Auth extends Component {
 
     return (
       <div className={classes.Auth}>
+        {successLoginRedirect}
         <h4>{formTitle}:</h4>
         {form}
         <div>
@@ -153,6 +161,7 @@ const mapStatetoProps = state => {
   return {
     error: state.auth.error,
     loading: state.auth.loading,
+    isAuthenticated: state.auth.token !== null,
   };
 };
 

@@ -30,7 +30,7 @@ const builderControls = props => {
         disabled={!props.enableOrder}
         onClick={props.ordered}
       >
-        Order Now
+        {props.isAuthenticated ? 'Order Now' : 'Sign in to order'}
       </button>
     </div>
   );
