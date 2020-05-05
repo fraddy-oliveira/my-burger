@@ -1,72 +1,22 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button from './../../../components/UI/Button/Button';
 import Spinner from './../../../components/UI/Spinner/Spinner';
 import axiosInstance from './../../../axios-orders';
 import Input from './../../../components/UI/Input/Input';
+import * as actionCreators from '../../../store/actions/index';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as forms from '../../../utils/forms';
 
 import classes from './ContactData.css';
-
-const formConfig = (elementType, options) => {
-  return {
-    elementType: elementType ? elementType : 'input',
-    elementConfig: {
-      type: options.type ? options.type : 'text',
-      name: options.name ? options.name : '',
-      placeholder: options.placeholder ? options.placeholder : '',
-      options: options.options ? options.options : '',
-      validation: options.validation ? options.validation : null,
-      errorMessage: options.errorMessage
-        ? options.errorMessage
-        : `Please enter ${
-            options.placeholder ? options.placeholder : ''
-          } value`,
-    },
-    value: options.value ? options.value : '',
-    valid: false,
-    touched: false,
-  };
-};
-
-const checkFieldValidity = (value, validation) => {
-  let valid = true;
-
-  if (!validation) {
-    return valid;
-  }
-
-  if (validation.required) {
-    valid = value !== '' && valid;
-  }
-
-  if (!isNaN(validation.minLength)) {
-    valid = value >= validation.minLength && valid;
-  }
-
-  if (!isNaN(validation.maxLength)) {
-    valid = value <= validation.maxLength && valid;
-  }
-
-  return valid;
-};
-
-const checkFormValidity = form => {
-  let valid = true;
-  for (let fieldName in form) {
-    if (!form[fieldName].valid) {
-      valid = false;
-      break;
-    }
-  }
-  return valid;
-};
 
 class ContactData extends Component {
   constructor(props) {
     super(props);
     this.state = {
       orderForm: {
-        name: formConfig('input', {
+        name: forms.formConfig('input', {
           type: 'text',
           name: 'name',
           placeholder: 'Name',
@@ -75,7 +25,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-        email: formConfig('input', {
+        email: forms.formConfig('input', {
           type: 'text',
           name: 'email',
           placeholder: 'Email',
@@ -83,7 +33,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-        street: formConfig('input', {
+        street: forms.formConfig('input', {
           type: 'text',
           name: 'street',
           placeholder: 'Street',
@@ -91,7 +41,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-        postalCode: formConfig('input', {
+        postalCode: forms.formConfig('input', {
           type: 'text',
           name: 'postalCode',
           placeholder: 'Post code',
@@ -99,7 +49,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-        country: formConfig('select', {
+        country: forms.formConfig('select', {
           name: 'country',
           options: [
             {
@@ -116,7 +66,7 @@ class ContactData extends Component {
             required: true,
           },
         }),
-        deliveryMethod: formConfig('select', {
+        deliveryMethod: forms.formConfig('select', {
           name: 'deliveryMethod',
           options: [
             {
@@ -134,7 +84,6 @@ class ContactData extends Component {
           },
         }),
       },
-      loading: false,
     };
   }
 
@@ -143,7 +92,7 @@ class ContactData extends Component {
     let orderForm = { ...this.state.orderForm };
 
     for (let fieldName in orderForm) {
-      orderForm[fieldName].valid = checkFieldValidity(
+      orderForm[fieldName].valid = forms.checkFieldValidity(
         orderForm[fieldName].value,
         orderForm[fieldName].elementConfig.validation
       );
@@ -164,7 +113,7 @@ class ContactData extends Component {
     let formData = {},
       orderForm = { ...this.state.orderForm };
 
-    if (!checkFormValidity(orderForm)) {
+    if (!forms.checkFormValidity(orderForm)) {
       console.log('form validation failed');
       return;
     }
@@ -173,25 +122,13 @@ class ContactData extends Component {
       formData[fieldName] = orderForm[fieldName].value;
     }
 
-    this.setState({ loading: true });
-
     const order = {
-      ingredients: this.props.ingredients,
-      price: this.props.totalPrice,
+      ingredients: this.props.ing,
+      price: Number(this.props.totalPrice).toFixed(2),
       customer: { ...formData },
     };
 
-    axiosInstance
-      .post('/orders.json', order)
-      .then(data => {
-        this.setState({ loading: false });
-        console.log('Order posting success');
-        this.props.history.push('/');
-      })
-      .catch(error => {
-        this.setState({ loading: false });
-        console.log('Order posting failed', error);
-      });
+    this.props.purchaseBurger(order, this.props.token);
   };
 
   formInputHandler = event => {
@@ -203,7 +140,7 @@ class ContactData extends Component {
       this.state.orderForm &&
       this.state.orderForm.hasOwnProperty(fieldName)
     ) {
-      const fieldValid = checkFieldValidity(fieldValue, {
+      const fieldValid = forms.checkFieldValidity(fieldValue, {
         ...this.state.orderForm[fieldName].elementConfig.validation,
       });
       this.setState(preState => {
@@ -241,7 +178,7 @@ class ContactData extends Component {
         <Button btnType="Success">ORDER</Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -253,4 +190,23 @@ class ContactData extends Component {
   }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+  return {
+    ing: state.burger.ingredients,
+    totalPrice: state.burger.totalPrice,
+    loading: state.order.loading,
+    token: state.auth.token,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    purchaseBurger: (orderData, token) =>
+      dispatch(actionCreators.purchaseBurger(orderData, token)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axiosInstance));

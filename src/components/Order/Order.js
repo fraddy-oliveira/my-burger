@@ -14,12 +14,15 @@ const Order = props => {
       </span>
     );
   });
-  
+
   return (
     <div className={classes.Order}>
       <p>Ingredients: {ingredients}</p>
       <p>
-        Price: <strong>USD {props.price}</strong>
+        Price:{' '}
+        <strong>
+          USD {Number(props.price) ? Number(props.price).toFixed(2) : ''}
+        </strong>
       </p>
     </div>
   );

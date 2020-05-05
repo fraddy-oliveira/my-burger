@@ -20,8 +20,8 @@ const builderControls = props => {
           key={ingred.type}
           label={ingred.label}
           type={ingred.type}
-          addIngredient={props.addIngredient}
-          removeIngredient={props.removeIngredient}
+          addIngredient={() => props.addIngredient(ingred.type)}
+          removeIngredient={() => props.removeIngredient(ingred.type)}
           disabled={props.disableInfo[ingred.type]}
         />
       ))}
@@ -30,7 +30,7 @@ const builderControls = props => {
         disabled={!props.enableOrder}
         onClick={props.ordered}
       >
-        Order Now
+        {props.isAuthenticated ? 'Order Now' : 'Sign in to order'}
       </button>
     </div>
   );
