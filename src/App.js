@@ -15,21 +15,29 @@ class App extends Component {
     this.props.tryRelogin();
   }
   render() {
+    const routesArr = [];
+    if (this.props.isAuthenticated) {
+      routesArr.push(<Route path="/orders" component={Orders} />);
+      routesArr.push(<Route path="/checkout" component={Checkout} />);
+      routesArr.push(<Route path="/logout" component={Logout} />);
+    }
+    routesArr.push(<Route path="/auth" component={Auth} />);
+    routesArr.push(<Route path="/" component={BurgerBuilder} />);
     return (
       <div>
         <Layout>
-          <Switch>
-            <Route path="/checkout" component={Checkout} />
-            <Route path="/orders" component={Orders} />
-            <Route path="/auth" component={Auth} />
-            <Route path="/logout" component={Logout} />
-            <Route path="/" component={BurgerBuilder} />
-          </Switch>
+          <Switch>{routesArr}</Switch>
         </Layout>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null,
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -37,4 +45,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
