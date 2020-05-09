@@ -1,17 +1,31 @@
 export const updateStorage = details => {
-  Object.keys(details).map(item => {
-    typeof item === 'string' &&
-      item.trim() &&
-      localStorage.setItem(item, details[item]);
-  });
+  try {
+    Object.keys(details).map(item => {
+      typeof item === 'string' &&
+        item.trim() &&
+        localStorage.setItem(item, details[item]);
+      return true;
+    });
+  } catch (error) {
+    console.log(' update storage error', error);
+    return false;
+  }
+  return true;
 };
 
 export const unsetStorage = items => {
-  Array.isArray(items) &&
-    items.map(item => {
-      localStorage.removeItem(item);
-    });
-  typeof items === 'string' && items.trim() && localStorage.removeItem(items);
+  try {
+    Array.isArray(items) &&
+      items.map(item => {
+        localStorage.removeItem(item);
+        return true;
+      });
+    typeof items === 'string' && items.trim() && localStorage.removeItem(items);
+  } catch (error) {
+    console.log(' unset storage error', error);
+    return false;
+  }
+  return true;
 };
 
 export const getUserStorage = () => {
@@ -28,5 +42,5 @@ export const getUserStorage = () => {
 };
 
 export const resetUserStorage = () => {
-  unsetStorage(Object.keys(getUserStorage()));
+  return unsetStorage(Object.keys(getUserStorage()));
 };
