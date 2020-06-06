@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import * as actionTypes from './actionTypes';
+import * as ls from '../../utils/localStorage';
 
 export const authStart = () => {
   return {
@@ -45,6 +46,15 @@ export const auth = (email, password, isSignUp) => {
       .then(response => {
         console.log('auth response', response);
         const { idToken, localId, expiresIn } = response.data;
+
+        ls.updateStorage({
+          token: idToken,
+          userId: localId,
+          expiresDate: new Date(
+            new Date().getTime() + expiresIn * 1000
+          ).toISOString(),
+        });
+
         dispatch(authSuccess(idToken, localId));
         dispatch(authExpirationTime(expiresIn));
       })
@@ -81,6 +91,8 @@ export const auth = (email, password, isSignUp) => {
 };
 
 export const logout = () => {
+  ls.resetUserStorage();
+
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
@@ -98,5 +110,25 @@ export const setAuthRedirectURL = path => {
   return {
     type: actionTypes.AUTH_SET_REDIRECT_URL,
     path: path ? path : '/',
+  };
+};
+
+export const checkAuthState = () => {
+  return dispatch => {
+    const { token, expiresDate, userId } = ls.getUserStorage();
+
+    if (!token || new Date(expiresDate).getTime() <= new Date().getTime()) {
+      dispatch(logout());
+    } else {
+      dispatch(authSuccess(token, userId));
+
+      dispatch(
+        authExpirationTime(
+          parseInt(
+            (new Date(expiresDate).getTime() - new Date().getTime()) / 1000
+          )
+        )
+      );
+    }
   };
 };
