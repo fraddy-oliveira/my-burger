@@ -1,7 +1,4 @@
-import axios from 'axios';
-
 import * as actionTypes from './actionTypes';
-import * as ls from '../../utils/localStorage';
 
 export const authStart = () => {
   return {
