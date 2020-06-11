@@ -91,8 +91,12 @@ export const auth = (email, password, isSignUp) => {
 };
 
 export const logout = () => {
-  ls.resetUserStorage();
+  return {
+    type: actionTypes.AUTH_INITIALIZE_LOGOUT,
+  };
+};
 
+export const logoutSuccess = () => {
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
