@@ -68,3 +68,21 @@ export function* auth(action) {
     yield put(actions.authFail(errorMessage));
   }
 }
+
+export function* checkAuthState(action) {
+  const { token, expiresDate, userId } = yield ls.getUserStorage();
+
+  if (!token || new Date(expiresDate).getTime() <= new Date().getTime()) {
+    yield put(actions.logout());
+  } else {
+    yield put(actions.authSuccess(token, userId));
+
+    yield put(
+      actions.authExpirationTime(
+        parseInt(
+          (new Date(expiresDate).getTime() - new Date().getTime()) / 1000
+        )
+      )
+    );
+  }
+}

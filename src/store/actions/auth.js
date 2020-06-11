@@ -60,21 +60,7 @@ export const setAuthRedirectURL = path => {
 };
 
 export const checkAuthState = () => {
-  return dispatch => {
-    const { token, expiresDate, userId } = ls.getUserStorage();
-
-    if (!token || new Date(expiresDate).getTime() <= new Date().getTime()) {
-      dispatch(logout());
-    } else {
-      dispatch(authSuccess(token, userId));
-
-      dispatch(
-        authExpirationTime(
-          parseInt(
-            (new Date(expiresDate).getTime() - new Date().getTime()) / 1000
-          )
-        )
-      );
-    }
+  return {
+    type: actionTypes.AUTH_STATE_CHECK,
   };
 };
