@@ -11,7 +11,7 @@ import App from './App';
 import reducerBurgerBuilder from './store/reducer/burgerBuilder';
 import reducerOrders from './store/reducer/orders';
 import reducerAuth from './store/reducer/auth';
-import { watchAuth } from './store/sagas/index.js';
+import { rootSaga } from './store/sagas/index.js';
 
 const composeEnhancers =
   (typeof window != 'undefined' &&
@@ -31,7 +31,7 @@ const store = createStore(
   composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
 );
 
-sagaMiddleware.run(watchAuth);
+sagaMiddleware.run(rootSaga);
 
 const app = (
   <Provider store={store}>
