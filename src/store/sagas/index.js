@@ -1,6 +1,7 @@
-import { takeEvery, all } from 'redux-saga/effects';
+import { takeEvery, all, takeLatest, fork } from 'redux-saga/effects';
 
 import { logout, authExpirationTime, auth, checkAuthState } from './auth.js';
+import { initIngredients } from './burgerBuilder.js';
 import * as actionTypes from '../actions/actionTypes.js';
 
 function* watchAuth() {
@@ -10,6 +11,10 @@ function* watchAuth() {
   yield takeEvery(actionTypes.AUTH_STATE_CHECK, checkAuthState);
 }
 
+function* watchBurgerBuilder() {
+  yield takeLatest(actionTypes.INITIALIZE_INGREDIENTS, initIngredients);
+}
+
 export function* rootSaga() {
-  yield all([watchAuth()]);
+  yield all([fork(watchAuth), fork(watchBurgerBuilder)]);
 }
