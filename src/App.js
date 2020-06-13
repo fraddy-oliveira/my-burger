@@ -17,12 +17,14 @@ class App extends Component {
   render() {
     const routesArr = [];
     if (this.props.isAuthenticated) {
-      routesArr.push(<Route path="/orders" component={Orders} />);
-      routesArr.push(<Route path="/checkout" component={Checkout} />);
-      routesArr.push(<Route path="/logout" component={Logout} />);
+      routesArr.push(<Route path="/orders" component={Orders} key="/orders" />);
+      routesArr.push(
+        <Route path="/checkout" component={Checkout} key="/checkout" />
+      );
+      routesArr.push(<Route path="/logout" component={Logout} key="/logout" />);
     }
-    routesArr.push(<Route path="/auth" component={Auth} />);
-    routesArr.push(<Route path="/" component={BurgerBuilder} />);
+    routesArr.push(<Route path="/auth" component={Auth} key="/auth" />);
+    routesArr.push(<Route path="/" component={BurgerBuilder} key="/" />);
     return (
       <div>
         <Layout>

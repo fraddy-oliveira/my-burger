@@ -4,12 +4,14 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
 
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import reducerBurgerBuilder from './store/reducer/burgerBuilder';
 import reducerOrders from './store/reducer/orders';
 import reducerAuth from './store/reducer/auth';
+import { rootSaga } from './store/sagas/index.js';
 
 const composeEnhancers =
   (typeof window != 'undefined' &&
@@ -22,7 +24,14 @@ const reducer = combineReducers({
   auth: reducerAuth,
 });
 
-const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  reducer,
+  composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
+);
+
+sagaMiddleware.run(rootSaga);
 
 const app = (
   <Provider store={store}>
