@@ -5,7 +5,6 @@ RUN npm install
 COPY . .
 
 FROM node:10.15.3 AS builder
-ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 COPY --from=dependencies /usr/src/app/node_modules ./node_modules
