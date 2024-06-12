@@ -1,0 +1,9 @@
+# Application
+.git/
+/build/
+/specs/
+.env.local
+.env.*.local
+
+# Package manager
+/node_modules/
