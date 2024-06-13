@@ -4,6 +4,34 @@ Can create a Burger with different ingredients. There is a checkout functionalit
 
 Developed using React.js
 
+## Set up development environment
+
+### Prerequisite
+
+- Node.js version 10.15.3
+- Docker
+- GCP account
+- Create API key from GCP Identity Platform
+- Create Realtime Database in firebase
+
+### Note
+
+I recommend to run project using docker because of Node version is bit older.
+
+- Create `.env.development.local` in root directory.
+  - `REACT_APP_FIREBASE_BASE_URL` is URL of `Realtime Database in firebase`
+  - `REACT_APP_API_KEY` is `API key from GCP Identity Platform`
+- In realtime database, add `ingredients` key with following value:
+  ```json
+  {
+    "bacon": 0,
+    "cheese": 0,
+    "meat": 0,
+    "salad": 0
+  }
+  ```
+- Run app from root directory with command `docker-compose up -d`.
+
 ## Authors
 
 - **Fraddy Oliveira**
