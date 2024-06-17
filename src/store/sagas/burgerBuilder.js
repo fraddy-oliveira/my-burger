@@ -5,7 +5,7 @@ import axiosOrders from '../../axios-orders';
 
 export function* initIngredients(action) {
   try {
-    const response = yield call(axiosOrders.get, '/ingredients.json');
+    const response = yield call(axiosOrders.get, '/ingredients');
 
     if (response && response.data) {
       yield put(actions.setIngredients(response.data));

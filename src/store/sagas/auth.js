@@ -20,10 +20,10 @@ export function* auth(action) {
   data.password = action.password;
   data.returnSecureToken = true;
 
-  let url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`;
+  let url = `${process.env.REACT_APP_BACKEND_BASE_URL}/signup`;
 
   if (!action.isSignUp) {
-    url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_KEY}`;
+    url = `${process.env.REACT_APP_BACKEND_BASE_URL}/signin`;
   }
 
   yield put(actions.authStart());

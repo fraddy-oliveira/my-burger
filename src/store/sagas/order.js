@@ -6,11 +6,9 @@ import axios from '../../axios-orders';
 export function* purchaseBurger(action) {
   yield put(actions.purchaseBurgerStart());
   try {
-    const response = yield call(
-      axios.post,
-      '/orders.json?auth=' + action.token,
-      action.orderData
-    );
+    const response = yield call(axios.post, '/order', action.orderData, {
+      headers: { Authorization: `Bearer ${action.token}` },
+    });
 
     yield put(
       actions.purchaseBurgerSuccess(response.data.name, action.orderData)
@@ -24,7 +22,9 @@ export function* fetchOrders(action) {
   yield put(actions.fetchOrdersStart());
 
   try {
-    const res = yield call(axios.get, '/orders.json?auth=' + action.token);
+    const res = yield call(axios.get, '/order', {
+      headers: { Authorization: `Bearer ${action.token}` },
+    });
 
     const fetchedOrders = [];
 
