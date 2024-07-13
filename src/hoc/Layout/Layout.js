@@ -39,7 +39,7 @@ class Layout extends Component {
           <script
             defer
             src="https://static.cloudflareinsights.com/beacon.min.js"
-            data-cf-beacon='{"token": "282767a0e3024803a5f4a24b93460591"}'
+            data-cf-beacon={`{"token": ${process.env.REACT_APP_WEB_ANALYTICS_TOKEN}}`}
           ></script>
         )}
       </Aux>
