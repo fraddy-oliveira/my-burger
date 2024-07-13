@@ -21,6 +21,7 @@ I recommend to run project using docker because of Node version is bit older.
 - Create `.env.development.local` in root directory.
   - `REACT_APP_FIREBASE_BASE_URL` is URL of `Realtime Database in firebase`
   - `REACT_APP_API_KEY` is `API key from GCP Identity Platform`
+  - `REACT_APP_FEATURE_WEB_ANALYTICS` is to enable/disable analytics `enabled/disabled`
 - In realtime database, add `ingredients` key with following value:
   ```json
   {
