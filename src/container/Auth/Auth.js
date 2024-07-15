@@ -8,7 +8,7 @@ import Button from '../../components/UI/Button/Button';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
-import classes from './Auth.css';
+import classes from './Auth.module.css';
 
 class Auth extends Component {
   constructor(props) {
