@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 
 import * as actions from '../actions/index.js';
-import axiosOrders from '../../axios-orders';
+import axiosOrders from '../../axios-orders.js';
 
 export function* initIngredients(action) {
   try {

@@ -1,21 +1,26 @@
-FROM node:10.15.3 AS dependencies
+FROM node:20.12.2-alpine3.19 AS dependencies
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
 
-FROM node:10.15.3 AS builder
+FROM node:20.12.2-alpine3.19 AS builder
 WORKDIR /usr/src/app
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+ARG REACT_APP_BACKEND_BASE_URL
+ENV REACT_APP_BACKEND_BASE_URL $REACT_APP_BACKEND_BASE_URL
+ARG REACT_APP_WEB_ANALYTICS_TOKEN
+ENV REACT_APP_WEB_ANALYTICS_TOKEN $REACT_APP_WEB_ANALYTICS_TOKEN
 COPY package.json package-lock.json ./
 COPY --from=dependencies /usr/src/app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-# TODO: wip - production build
-FROM node:10.15.3 AS production
+FROM node:20.12.2-alpine3.19 AS production
 ENV NODE_ENV production
 WORKDIR /usr/src/app
-RUN npm install --global serve@13.0.0
+RUN npm install --global serve
 COPY --from=builder /usr/src/app/build ./build
 EXPOSE 3000
 CMD [ "serve", "-p", "3000", "/usr/src/app/build/" ]
