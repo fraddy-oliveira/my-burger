@@ -1,18 +1,29 @@
-version: "3.9"
+version: '3.9'
 services:
   my-burger:
     build:
       context: .
       target: builder
-    command: "yarn start"
+    command: 'npm run start'
     image: my-burger
     container_name: my-burger
     working_dir: /usr/src/app
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - ./.env.development.local
     volumes:
       - ./src:/usr/src/app/src/
-      - ./config:/usr/src/app/config/
-      - ./scripts:/usr/src/app/scripts/
+
+  my-burger-prod:
+    build:
+      context: .
+      target: production
+      args:
+        REACT_APP_WEB_ANALYTICS_TOKEN: 'dummy_token'
+        REACT_APP_BACKEND_BASE_URL: https://my-burger-backend.fraddyoliveira.com/.netlify/functions/server
+    image: my-burger
+    container_name: my-burger
+    working_dir: /usr/src/app
+    ports:
+      - '3000:3000'
