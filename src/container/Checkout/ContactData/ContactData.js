@@ -31,6 +31,7 @@ class ContactData extends Component {
           placeholder: 'Email',
           validation: {
             required: true,
+            isEmail: true,
           },
         }),
         street: forms.formConfig('input', {
@@ -92,10 +93,19 @@ class ContactData extends Component {
     let orderForm = { ...this.state.orderForm };
 
     for (let fieldName in orderForm) {
-      orderForm[fieldName].valid = forms.checkFieldValidity(
+      const { valid, errorMessage } = forms.checkFieldValidity(
         orderForm[fieldName].value,
-        orderForm[fieldName].elementConfig.validation
+        orderForm[fieldName].elementConfig.validation,
+        orderForm[fieldName].elementConfig.placeholder
       );
+
+      orderForm[fieldName].valid = valid;
+
+      orderForm[fieldName].elementConfig = {
+        ...orderForm[fieldName].elementConfig,
+        errorMessage,
+      };
+
       orderForm[fieldName].touched = true;
     }
 
@@ -140,9 +150,14 @@ class ContactData extends Component {
       this.state.orderForm &&
       this.state.orderForm.hasOwnProperty(fieldName)
     ) {
-      const fieldValid = forms.checkFieldValidity(fieldValue, {
-        ...this.state.orderForm[fieldName].elementConfig.validation,
-      });
+      const { valid: fieldValid, errorMessage } = forms.checkFieldValidity(
+        fieldValue,
+        {
+          ...this.state.orderForm[fieldName].elementConfig.validation,
+        },
+        this.state.orderForm[fieldName].elementConfig.placeholder
+      );
+
       this.setState(preState => {
         return {
           orderForm: {
@@ -152,6 +167,10 @@ class ContactData extends Component {
               value: fieldValue,
               valid: fieldValid,
               touched: true,
+              elementConfig: {
+                ...preState.orderForm[fieldName].elementConfig,
+                errorMessage,
+              },
             },
           },
         };
@@ -171,6 +190,7 @@ class ContactData extends Component {
               changeHandler={this.formInputHandler}
               valid={this.state.orderForm[fieldName].valid}
               touched={this.state.orderForm[fieldName].touched}
+              value={this.state.orderForm[fieldName].value}
             />
           );
         })}

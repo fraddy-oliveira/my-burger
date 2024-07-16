@@ -21,14 +21,17 @@ class Auth extends Component {
           placeholder: 'Email',
           validation: {
             required: true,
+            isEmail: true,
           },
         }),
         password: forms.formConfig('input', {
-          type: 'text',
+          type: 'password',
           name: 'password',
           placeholder: 'Password',
           validation: {
             required: true,
+            minLength: 8,
+            maxLength: 20,
           },
         }),
       },
@@ -41,10 +44,19 @@ class Auth extends Component {
     let controls = { ...this.state.controls };
 
     for (let fieldName in controls) {
-      controls[fieldName].valid = forms.checkFieldValidity(
+      const { valid, errorMessage } = forms.checkFieldValidity(
         controls[fieldName].value,
-        controls[fieldName].elementConfig.validation
+        controls[fieldName].elementConfig.validation,
+        controls[fieldName].elementConfig.placeholder
       );
+
+      controls[fieldName].valid = valid;
+
+      controls[fieldName].elementConfig = {
+        ...controls[fieldName].elementConfig,
+        errorMessage,
+      };
+
       controls[fieldName].touched = true;
     }
 
@@ -82,9 +94,14 @@ class Auth extends Component {
     const fieldValue = event.target.value;
 
     if (this.state.controls && this.state.controls.hasOwnProperty(fieldName)) {
-      const fieldValid = forms.checkFieldValidity(fieldValue, {
-        ...this.state.controls[fieldName].elementConfig.validation,
-      });
+      const { valid: fieldValid, errorMessage } = forms.checkFieldValidity(
+        fieldValue,
+        {
+          ...this.state.controls[fieldName].elementConfig.validation,
+        },
+        this.state.controls[fieldName].elementConfig.placeholder
+      );
+
       this.setState(preState => {
         return {
           controls: {
@@ -94,6 +111,10 @@ class Auth extends Component {
               value: fieldValue,
               valid: fieldValid,
               touched: true,
+              elementConfig: {
+                ...preState.controls[fieldName].elementConfig,
+                errorMessage,
+              },
             },
           },
         };
@@ -121,8 +142,11 @@ class Auth extends Component {
       successLoginRedirect = <Redirect to={this.props.authRedirectUrl} />;
     }
 
+    let formTitle = this.state.isSignUp ? 'Sign Up' : 'Sign In';
+
     let form = (
       <form onSubmit={this.submitHandler}>
+        <h4>{formTitle}:</h4>
         {Object.keys(this.state.controls).map(fieldName => {
           return (
             <Input
@@ -146,18 +170,17 @@ class Auth extends Component {
       form = <Spinner />;
     }
 
-    let formTitle = this.state.isSignUp ? 'Sign Up' : 'Sign In';
-
     return (
       <div className={classes.Auth}>
         {successLoginRedirect}
-        <h4>{formTitle}:</h4>
         {form}
-        <div>
-          <Button btnType="Danger" clicked={this.switchForms}>
-            SWITCH TO {this.state.isSignUp ? 'SIGNIN' : 'SIGNUP'}
-          </Button>
-        </div>
+        {!this.props.loading && (
+          <div>
+            <Button btnType="Danger" clicked={this.switchForms}>
+              SWITCH TO {this.state.isSignUp ? 'SIGNIN' : 'SIGNUP'}
+            </Button>
+          </div>
+        )}
       </div>
     );
   }

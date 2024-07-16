@@ -19,26 +19,40 @@ export const formConfig = (elementType, options) => {
   };
 };
 
-export const checkFieldValidity = (value, validation) => {
-  let valid = true;
+export const checkFieldValidity = (value, validation, placeholder) => {
+  let valid = true,
+    errorMessage = '';
 
   if (!validation) {
-    return valid;
+    return { valid, errorMessage };
   }
 
-  if (validation.required) {
-    valid = value !== '' && valid;
+  if (validation.required && value === '') {
+    return { valid: false, errorMessage: `${placeholder} field is required` };
   }
 
-  if (!isNaN(validation.minLength)) {
-    valid = value >= validation.minLength && valid;
+  if (validation.isEmail && !isEmail(value)) {
+    return {
+      valid: false,
+      errorMessage: `${placeholder} field should be valid email`,
+    };
   }
 
-  if (!isNaN(validation.maxLength)) {
-    valid = value <= validation.maxLength && valid;
+  if (validation.minLength && String(value).length < validation.minLength) {
+    return {
+      valid: false,
+      errorMessage: `${placeholder} length must be atleast ${validation.minLength} characters`,
+    };
   }
 
-  return valid;
+  if (validation.maxLength && String(value).length > validation.maxLength) {
+    return {
+      valid: false,
+      errorMessage: `${placeholder} length must not exceed ${validation.maxLength} characters`,
+    };
+  }
+
+  return { valid, errorMessage };
 };
 
 export const checkFormValidity = form => {
@@ -51,3 +65,6 @@ export const checkFormValidity = form => {
   }
   return valid;
 };
+
+export const isEmail = email =>
+  String(email).match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) !== null;
