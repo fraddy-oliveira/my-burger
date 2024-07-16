@@ -25,11 +25,13 @@ class Auth extends Component {
           },
         }),
         password: forms.formConfig('input', {
-          type: 'text',
+          type: 'password',
           name: 'password',
           placeholder: 'Password',
           validation: {
             required: true,
+            minLength: 8,
+            maxLength: 20,
           },
         }),
       },
