@@ -174,11 +174,13 @@ class Auth extends Component {
       <div className={classes.Auth}>
         {successLoginRedirect}
         {form}
-        <div>
-          <Button btnType="Danger" clicked={this.switchForms}>
-            SWITCH TO {this.state.isSignUp ? 'SIGNIN' : 'SIGNUP'}
-          </Button>
-        </div>
+        {!this.props.loading && (
+          <div>
+            <Button btnType="Danger" clicked={this.switchForms}>
+              SWITCH TO {this.state.isSignUp ? 'SIGNIN' : 'SIGNUP'}
+            </Button>
+          </div>
+        )}
       </div>
     );
   }
