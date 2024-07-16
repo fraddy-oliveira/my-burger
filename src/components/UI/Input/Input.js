@@ -1,5 +1,5 @@
 import React from 'react';
-import shortid from 'shortid';
+import { nanoid } from 'nanoid';
 
 import classes from './Input.module.css';
 
@@ -23,7 +23,7 @@ const Input = props => {
         props.elementConfig &&
         Array.isArray(props.elementConfig.options) &&
         props.elementConfig.options.map(option => (
-          <option key={option.value + shortid.generate()} value={option.value}>
+          <option key={nanoid()} value={option.value}>
             {option.displayValue}
           </option>
         ));
