@@ -142,8 +142,11 @@ class Auth extends Component {
       successLoginRedirect = <Redirect to={this.props.authRedirectUrl} />;
     }
 
+    let formTitle = this.state.isSignUp ? 'Sign Up' : 'Sign In';
+
     let form = (
       <form onSubmit={this.submitHandler}>
+        <h4>{formTitle}:</h4>
         {Object.keys(this.state.controls).map(fieldName => {
           return (
             <Input
@@ -167,12 +170,9 @@ class Auth extends Component {
       form = <Spinner />;
     }
 
-    let formTitle = this.state.isSignUp ? 'Sign Up' : 'Sign In';
-
     return (
       <div className={classes.Auth}>
         {successLoginRedirect}
-        <h4>{formTitle}:</h4>
         {form}
         <div>
           <Button btnType="Danger" clicked={this.switchForms}>
