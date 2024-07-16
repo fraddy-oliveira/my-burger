@@ -67,4 +67,4 @@ export const checkFormValidity = form => {
 };
 
 export const isEmail = email =>
-  String(email).match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) !== null;
+  String(email).match(/^[a-zA-Z0–9._-]+@[a-zA-Z0–9.-]+\.[a-zA-Z]{2,4}$/g) !== null;
