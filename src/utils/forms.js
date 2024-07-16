@@ -41,14 +41,14 @@ export const checkFieldValidity = (value, validation, placeholder) => {
   if (validation.minLength && String(value).length < validation.minLength) {
     return {
       valid: false,
-      errorMessage: `${placeholder} value should have min length of ${validation.minLength} characters`,
+      errorMessage: `${placeholder} length must be atleast ${validation.minLength} characters`,
     };
   }
 
   if (validation.maxLength && String(value).length > validation.maxLength) {
     return {
       valid: false,
-      errorMessage: `${placeholder} value should have max length of ${validation.maxLength} characters`,
+      errorMessage: `${placeholder} length must not exceed ${validation.maxLength} characters`,
     };
   }
 
