@@ -21,6 +21,7 @@ class Auth extends Component {
           placeholder: 'Email',
           validation: {
             required: true,
+            isEmail: true,
           },
         }),
         password: forms.formConfig('input', {
@@ -41,10 +42,19 @@ class Auth extends Component {
     let controls = { ...this.state.controls };
 
     for (let fieldName in controls) {
-      controls[fieldName].valid = forms.checkFieldValidity(
+      const { valid, errorMessage } = forms.checkFieldValidity(
         controls[fieldName].value,
-        controls[fieldName].elementConfig.validation
+        controls[fieldName].elementConfig.validation,
+        controls[fieldName].elementConfig.placeholder
       );
+
+      controls[fieldName].valid = valid;
+
+      controls[fieldName].elementConfig = {
+        ...controls[fieldName].elementConfig,
+        errorMessage,
+      };
+
       controls[fieldName].touched = true;
     }
 
@@ -82,9 +92,14 @@ class Auth extends Component {
     const fieldValue = event.target.value;
 
     if (this.state.controls && this.state.controls.hasOwnProperty(fieldName)) {
-      const fieldValid = forms.checkFieldValidity(fieldValue, {
-        ...this.state.controls[fieldName].elementConfig.validation,
-      });
+      const { valid: fieldValid, errorMessage } = forms.checkFieldValidity(
+        fieldValue,
+        {
+          ...this.state.controls[fieldName].elementConfig.validation,
+        },
+        this.state.controls[fieldName].elementConfig.placeholder
+      );
+
       this.setState(preState => {
         return {
           controls: {
@@ -94,6 +109,10 @@ class Auth extends Component {
               value: fieldValue,
               valid: fieldValid,
               touched: true,
+              elementConfig: {
+                ...preState.controls[fieldName].elementConfig,
+                errorMessage,
+              },
             },
           },
         };
