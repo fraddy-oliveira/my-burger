@@ -9,7 +9,7 @@ type Props = React.PropsWithChildren<{
 
 export default function Header({ handlerToggleSideDrawer }: Props) {
   return (
-    <header className={classes.Header}>
+    <header className={`${classes.Header} section-bg-color`}>
       <DrawerToggle clickHandler={handlerToggleSideDrawer} />
 
       <div className={classes.Logo}>
