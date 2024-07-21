@@ -1,12 +1,17 @@
 import React from "react";
 import classes from "./NavigationItems.module.css";
 import NavigationItem from "./NavigationItem/NavigationItem";
+import { useAuthStore } from "@app/providers/auth-store-provider";
 
 type Props = React.PropsWithChildren<{
   isAuthenticated: boolean;
 }>;
 
 export default function NavigationItems(props: Props) {
+  const { logout } = useAuthStore(({ logout }) => ({
+    logout,
+  }));
+
   return (
     <ul className={classes.NavigationItems}>
       <NavigationItem link="/">Burger builder</NavigationItem>
@@ -16,7 +21,9 @@ export default function NavigationItems(props: Props) {
       {!props.isAuthenticated ? (
         <NavigationItem link="/auth">Auth</NavigationItem>
       ) : (
-        <NavigationItem link="/logout">Logout</NavigationItem>
+        <NavigationItem link="" clickHandler={logout}>
+          Logout
+        </NavigationItem>
       )}
     </ul>
   );
