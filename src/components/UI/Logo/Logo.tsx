@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import logoImage from "@app/assets/images/burger-logo.png";
+import logoImage from "@/assets/images/burger-logo.png";
 import classes from "./Logo.module.css";
 
 type Props = React.PropsWithChildren<{

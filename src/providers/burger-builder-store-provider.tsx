@@ -5,7 +5,7 @@ import { useStore } from "zustand";
 import {
   type BurgerBuilderStore,
   createBurgerBuilderStore,
-} from "@app/stores/burger-builder-store";
+} from "@/stores/burger-builder-store";
 
 export type BurgerBuilderStoreApi = ReturnType<typeof createBurgerBuilderStore>;
 

@@ -4,7 +4,7 @@ import Logo from "../UI/Logo/Logo";
 import DrawerToggle from "./DrawerToggle/DrawerToggle";
 import classes from "./Header.module.css";
 import NavigationItems from "./NavigationItems/NavigationItems";
-import { useAuthStore } from "@app/providers/auth-store-provider";
+import { useAuthStore } from "@/providers/auth-store-provider";
 
 type Props = React.PropsWithChildren<{
   handlerToggleSideDrawer: () => void;

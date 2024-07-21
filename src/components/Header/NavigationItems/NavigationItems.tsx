@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./NavigationItems.module.css";
 import NavigationItem from "./NavigationItem/NavigationItem";
-import { useAuthStore } from "@app/providers/auth-store-provider";
+import { useAuthStore } from "@/providers/auth-store-provider";
 
 type Props = React.PropsWithChildren<{
   isAuthenticated: boolean;

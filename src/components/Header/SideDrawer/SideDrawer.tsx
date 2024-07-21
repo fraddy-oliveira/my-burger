@@ -1,9 +1,9 @@
 import React from "react";
-import Backdrop from "@app/components/UI/Backdrop/Backdrop";
-import Logo from "@app/components/UI/Logo/Logo";
+import Backdrop from "@/components/UI/Backdrop/Backdrop";
+import Logo from "@/components/UI/Logo/Logo";
 import NavigationItems from "../NavigationItems/NavigationItems";
 import classes from "./SideDrawer.module.css";
-import { useAuthStore } from "@app/providers/auth-store-provider";
+import { useAuthStore } from "@/providers/auth-store-provider";
 
 type Props = React.PropsWithChildren<{
   show: boolean;
