@@ -81,7 +81,7 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
         },
       }),
       {
-        name: "checkout",
+        name: "auth",
         skipHydration: false,
         storage: createJSONStorage(() => sessionStorage),
       }
