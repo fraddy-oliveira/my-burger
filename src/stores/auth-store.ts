@@ -7,7 +7,7 @@ export type AuthState = {
   token: string | null;
   userId: string | null;
   loading: boolean;
-  error: {} | null;
+  error: string | null;
   authRedirectUrl: string;
   expiresDate: string | null;
 };
@@ -59,9 +59,11 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
             if (!response.ok) {
               const errorResPayload = await response.json();
 
-              return set({
+              set({
                 error: (errorResPayload as any).error.message,
               });
+
+              return;
             }
 
             const responsePayload = await response.json();
