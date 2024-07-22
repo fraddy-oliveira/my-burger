@@ -8,7 +8,7 @@ type Props = React.PropsWithChildren<{
   isAuthenticated: boolean;
 }>;
 
-export default function NavigationItems(props: Props) {
+export default function NavigationItems({ isAuthenticated }: Props) {
   const router = useRouter();
 
   const { logout } = useAuthStore(({ logout }) => ({
@@ -23,10 +23,10 @@ export default function NavigationItems(props: Props) {
   return (
     <ul className={classes.NavigationItems}>
       <NavigationItem link="/">Burger builder</NavigationItem>
-      {props.isAuthenticated ? (
+      {isAuthenticated ? (
         <NavigationItem link="/orders">Orders</NavigationItem>
       ) : null}
-      {!props.isAuthenticated ? (
+      {!isAuthenticated ? (
         <NavigationItem link="/auth">Auth</NavigationItem>
       ) : (
         <NavigationItem link="" clickHandler={handlerLogout}>

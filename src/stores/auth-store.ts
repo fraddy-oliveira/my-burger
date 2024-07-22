@@ -13,7 +13,6 @@ export type AuthState = {
 };
 
 export type AuthActions = {
-  isAuthenticated: () => boolean;
   login: (data: LoginParams) => Promise<void>;
   logout: () => void;
 };
@@ -34,7 +33,6 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
     persist(
       (set, get) => ({
         ...initState,
-        isAuthenticated: () => get().token !== null,
         logout: () => set({ ...initState }),
         login: async (requestPayload) => {
           let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/signup`;

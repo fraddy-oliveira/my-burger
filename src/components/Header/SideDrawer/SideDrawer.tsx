@@ -4,6 +4,7 @@ import Logo from "@/components/UI/Logo/Logo";
 import NavigationItems from "../NavigationItems/NavigationItems";
 import classes from "./SideDrawer.module.css";
 import { useAuthStore } from "@/providers/auth-store-provider";
+import { isAuthenticated } from "@/utils/auth-helper";
 
 type Props = React.PropsWithChildren<{
   show: boolean;
@@ -13,8 +14,8 @@ type Props = React.PropsWithChildren<{
 export default function SideDrawer(props: Props) {
   let sideDrawerClasses = [classes.SideDrawer];
 
-  const { isAuthenticated } = useAuthStore(({ isAuthenticated }) => ({
-    isAuthenticated,
+  const { token } = useAuthStore(({ token }) => ({
+    token,
   }));
 
   if (props.show) {
@@ -31,7 +32,7 @@ export default function SideDrawer(props: Props) {
           <Logo width={72} />
         </div>
         <nav>
-          <NavigationItems isAuthenticated={isAuthenticated()} />
+          <NavigationItems isAuthenticated={isAuthenticated(token)} />
         </nav>
       </div>
     </>
