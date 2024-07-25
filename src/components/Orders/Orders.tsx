@@ -1,49 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/providers/auth-store-provider";
-import { fetchOrders } from "@/services/fetch-orders";
 import { isAuthenticated } from "@/utils/auth-helper";
 import Spinner from "@/components/UI/Spinner/Spinner";
-import { Orders } from "@/types/orders-types";
-import classes from "./orders.module.css";
 import { Ingredients } from "@/stores/burger-builder-store";
+import { useOrdersStore } from "@/providers/orders-store-provider";
+import classes from "./orders.module.css";
 
 export default function Orders() {
   const router = useRouter();
-  const [orders, setOrders] = useState<Orders[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>("");
 
   const { token } = useAuthStore(({ token }) => ({
     token,
   }));
 
+  const { fetchOrders, orders, loading, error } = useOrdersStore(
+    ({ fetchOrders, orders, loading, error }) => ({
+      fetchOrders,
+      orders,
+      loading,
+      error,
+    })
+  );
+
   useEffect(() => {
-    if (!token || isAuthenticated(token) === false) {
+    if (isAuthenticated(token) === false) {
       router.push("/auth");
       return;
     }
 
-    setLoading(true);
-
-    fetchOrders(token)
-      .then((d) => {
-        if ("data" in d) {
-          setOrders(d.data);
-          setError(null);
-        } else {
-          throw d;
-        }
-      })
-      .catch((d) => {
-        setOrders([]);
-        setError(d?.error?.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    token && fetchOrders(token);
   }, [token]);
 
   const allOrders = orders.map((order) => {
@@ -73,7 +61,11 @@ export default function Orders() {
     );
   });
 
-  if (error) return <div>{error}</div>;
+  if (!isAuthenticated(token)) {
+    return null;
+  }
+
+  if (error !== "") return <div>{error}</div>;
 
   return <div>{loading ? <Spinner /> : allOrders}</div>;
 }

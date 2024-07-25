@@ -1,5 +1,6 @@
 import { createStore } from "zustand/vanilla";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getIngredients } from "@/services/get-ingredients";
 
 export type Ingredients = {
   salad: number;
@@ -15,14 +16,12 @@ export type BurgerBuilderState = {
   building: boolean;
 };
 
-type AddIngredientParams = { ingredientCode: keyof Ingredients };
-type RemoveIngredientParams = { ingredientCode: keyof Ingredients };
-
 export type BurgerBuilderActions = {
-  addIngredients: (ingredient: AddIngredientParams) => void;
-  removeIngredients: (ingredient: RemoveIngredientParams) => void;
+  addIngredient: (ingredientCode: keyof Ingredients) => void;
+  removeIngredient: (ingredientCode: keyof Ingredients) => void;
   setIngredients: (ingredient: Ingredients) => void;
   fetchIngredientsFailed: () => void;
+  initIngredients: () => Promise<void>;
 };
 
 export type BurgerBuilderStore = BurgerBuilderState & BurgerBuilderActions;
@@ -48,11 +47,15 @@ export const createBurgerBuilderStore = (
     persist(
       (set, get) => ({
         ...initState,
-        addIngredients: ({ ingredientCode }: AddIngredientParams) => {
+        addIngredient: (ingredientCode: keyof Ingredients) => {
+          console.debug(`ingredientCode ${ingredientCode}`);
+
           const ingredients = get().ingredients;
 
           if (!ingredients) {
-            throw new Error("Ingredients not initialized");
+            //  TODO: remove alert
+            alert("Ingredients not initialized");
+            return;
           }
 
           set({
@@ -60,13 +63,17 @@ export const createBurgerBuilderStore = (
               ...ingredients,
               [ingredientCode]: ingredients[ingredientCode] + 1,
             },
+            totalPrice: get().totalPrice + INGREDIENTS_PRICE[ingredientCode],
+            building: true,
           });
         },
-        removeIngredients: ({ ingredientCode }: RemoveIngredientParams) => {
+        removeIngredient: (ingredientCode: keyof Ingredients) => {
           const ingredients = get().ingredients;
 
           if (!ingredients) {
-            throw new Error("Ingredients not initialized");
+            //  TODO: remove alert
+            alert("Ingredients not initialized");
+            return;
           }
 
           set({
@@ -74,16 +81,29 @@ export const createBurgerBuilderStore = (
               ...ingredients,
               [ingredientCode]: ingredients[ingredientCode] - 1,
             },
+            totalPrice: get().totalPrice - INGREDIENTS_PRICE[ingredientCode],
+            building: true,
           });
         },
         setIngredients: (ingredients: Ingredients) => {
           set({
-            ingredients,
+            ingredients: { ...ingredients },
+            totalPrice: defaultInitState.totalPrice,
             error: false,
             building: false,
           });
         },
         fetchIngredientsFailed: () => set({ error: true }),
+        initIngredients: async () => {
+          const response = await getIngredients();
+          if ("data" in response) {
+            get().setIngredients(response.data);
+          } else {
+            get().fetchIngredientsFailed();
+            //  TODO: remove alert
+            alert(`Fetching ingredients failed.`);
+          }
+        },
       }),
       {
         name: "burger-builder",

@@ -15,6 +15,7 @@ export type AuthState = {
 export type AuthActions = {
   login: (data: LoginParams) => Promise<void>;
   logout: () => void;
+  setAuthRedirectURL: (URL: string) => void;
 };
 
 export type AuthStore = AuthState & AuthActions;
@@ -33,13 +34,16 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
     persist(
       (set, get) => ({
         ...initState,
-        logout: () => set({ ...initState }),
+        logout: () =>
+          set({ token: null, userId: null, loading: false, error: null }),
         login: async (requestPayload) => {
           let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/signup`;
 
           if (!requestPayload.isSignUp) {
             url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/signin`;
           }
+
+          set({ loading: true, error: null });
 
           try {
             const response = await fetch(url, {
@@ -69,16 +73,20 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
             set({
               token: responsePayload.idToken,
               userId: responsePayload.localId,
+              loading: false,
               expiresDate: new Date(
                 new Date().getTime() + responsePayload.expiresIn * 1000
               ).toISOString(),
             });
+            //  TODO: authExpirationTime action exited here
           } catch (error) {
             set({
               error: "Some error occurred",
+              loading: false,
             });
           }
         },
+        setAuthRedirectURL: (authRedirectUrl) => set({ authRedirectUrl }),
       }),
       {
         name: "auth",

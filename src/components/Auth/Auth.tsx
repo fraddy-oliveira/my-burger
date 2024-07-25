@@ -8,6 +8,8 @@ import * as forms from "../../utils/forms";
 import Input from "../UI/Input/Input";
 import Button from "../UI/Button/Button";
 import Spinner from "../UI/Spinner/Spinner";
+import { useBurgerBuilderStore } from "@/providers/burger-builder-store-provider";
+import { isAuthenticated } from "@/utils/auth-helper";
 
 type Props = React.PropsWithChildren<{}>;
 
@@ -18,18 +20,41 @@ type AuthFormControls = Record<FormFieldsKeyType, forms.FormConfigType>;
 export default function Auth({}: Props) {
   const router = useRouter();
 
-  const { error, login, loading, token } = useAuthStore(
-    ({ error, login, loading, token }) => ({
-      error,
-      login,
-      loading,
-      token,
-    })
+  const { buildingBurger } = useBurgerBuilderStore(
+    ({ building: buildingBurger }) => ({ buildingBurger })
   );
 
+  const { error, login, loading, token, authRedirectUrl, setAuthRedirectURL } =
+    useAuthStore(
+      ({
+        error,
+        login,
+        loading,
+        token,
+        authRedirectUrl,
+        setAuthRedirectURL,
+      }) => ({
+        error,
+        login,
+        loading,
+        token,
+        authRedirectUrl,
+        setAuthRedirectURL,
+      })
+    );
+
   useEffect(() => {
-    if (token !== null) router.push("/");
-  }, [token]);
+    if (token && isAuthenticated(token) === true) {
+      router.push(authRedirectUrl);
+      return;
+    }
+  }, [token, authRedirectUrl]);
+
+  useEffect(() => {
+    if (!buildingBurger && authRedirectUrl !== "/") {
+      setAuthRedirectURL("/");
+    }
+  }, []);
 
   const [isSignUp, setIsSignUp] = useState(false);
 
@@ -132,10 +157,6 @@ export default function Auth({}: Props) {
   };
 
   const switchForms = () => setIsSignUp((s) => !s);
-
-  if (token !== null) {
-    return null;
-  }
 
   let formTitle = isSignUp ? "Sign Up" : "Sign In";
 

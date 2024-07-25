@@ -1,6 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { Ingredients } from "./burger-builder-store";
+import { ValueType } from "@/utils/forms";
 
 export type OrdersState = {
   loading: boolean;
@@ -16,10 +17,11 @@ export type OrdersState = {
 type OrderPayloadType = {
   ingredients: Ingredients;
   price: number;
-  customer: Record<string, string>;
+  customer: Record<string, ValueType>;
 };
 
 export type OrderActions = {
+  purchaseBurgerInit: () => void;
   purchaseBurger: (data: {
     orderPayload: OrderPayloadType;
     token: string;
@@ -43,9 +45,12 @@ export const createOrdersStore = (
     persist(
       (set, get) => ({
         ...initState,
+        purchaseBurgerInit: () => set({ purchased: false }),
         purchaseBurger: async (purchaseBurgerData) => {
           try {
             let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/order`;
+
+            set({ loading: true, error: "" });
 
             const response = await fetch(url, {
               method: "POST",
@@ -71,12 +76,14 @@ export const createOrdersStore = (
               purchased: true,
             });
           } catch (error) {
-            set({ error: "Oops, some error occurred." });
+            set({ loading: false, error: "Oops, some error occurred." });
           }
         },
         fetchOrders: async (token) => {
           try {
             let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/order`;
+
+            set({ loading: true, error: "" });
 
             const response = await fetch(url, {
               method: "GET",
@@ -86,7 +93,7 @@ export const createOrdersStore = (
             });
 
             if (!response.ok) {
-              return set({ error: "Failed to load orders." });
+              return set({ error: "Failed to load orders.", loading: false });
             }
 
             const responsePayload = await response.json();
@@ -102,7 +109,7 @@ export const createOrdersStore = (
 
             set({ orders: fetchedOrders, loading: false });
           } catch (error) {
-            set({ error: "Oops, some error occurred." });
+            set({ error: "Oops, some error occurred.", loading: false });
           }
         },
       }),

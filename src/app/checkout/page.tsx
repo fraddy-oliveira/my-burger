@@ -1,9 +1,9 @@
-import Orders from "@/components/Orders/Orders";
+import Checkout from "@/components/Checkout/Checkout";
 
 export default function Home() {
   return (
     <div className="section">
-      <Orders />
+      <Checkout />
     </div>
   );
 }
