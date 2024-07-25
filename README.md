@@ -19,7 +19,7 @@ Developed using React.js
 I recommend to run project using docker because of Node version is bit older.
 
 - Create `.env.development.local` in root directory.
-  - `REACT_APP_FEATURE_WEB_ANALYTICS` is to enable/disable analytics `enabled/disabled`
+  - `NEXT_PUBLIC_FEATURE_WEB_ANALYTICS` is to enable/disable analytics `enabled/disabled`
 - In realtime database, add `ingredients` key with following value:
   ```json
   {
