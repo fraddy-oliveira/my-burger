@@ -5,6 +5,7 @@ import Layout from "@/components/Layout/Layout";
 import { AuthStoreProvider } from "@/providers/auth-store-provider";
 import { OrdersStoreProvider } from "@/providers/orders-store-provider";
 import { BurgerBuilderStoreProvider } from "@/providers/burger-builder-store-provider";
+import { ENABLED } from "@/utils/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,14 @@ export default function RootLayout({
             </OrdersStoreProvider>
           </BurgerBuilderStoreProvider>
         </AuthStoreProvider>
+
+        {process.env.FEATURE_WEB_ANALYTICS === ENABLED && (
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={`{"token": ${process.env.WEB_ANALYTICS_TOKEN}}`}
+          ></script>
+        )}
       </body>
     </html>
   );
