@@ -1,4 +1,4 @@
-export type ThirdPartyApiErrorResponse = {
+export type FirebaseAuthErrorResponse = {
   error: {
     code: number;
     message: string;

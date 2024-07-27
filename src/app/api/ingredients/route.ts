@@ -1,6 +1,16 @@
 import { jsonResponse } from "@/api/helpers/api-helpers";
+import BurgerService from "@/api/services/burger.service";
+import APIError from "@/api/utils/api-error";
+import { API_ERROR } from "@/api/utils/constants";
 
-type ThirdPartyApiResponse = {
+export type GetIngredientsFirebaseResponse = {
+  bacon: number;
+  cheese: number;
+  meat: number;
+  salad: number;
+};
+
+export type GetIngredientsResponsePayload = {
   bacon: number;
   cheese: number;
   meat: number;
@@ -9,21 +19,15 @@ type ThirdPartyApiResponse = {
 
 export async function GET() {
   try {
-    const response = await fetch(
-      `${process.env.FIREBASE_BASE_URL}/ingredients.json`
-    );
-
-    if (!response.ok) {
+    return jsonResponse(await BurgerService.getIngredients());
+  } catch (error) {
+    if (error instanceof APIError) {
       return jsonResponse(
-        { message: "Ingredients not found." },
-        response.status
+        { message: error.message, errorCode: error.errorCode },
+        error.statusCode
       );
     }
 
-    const data = (await response.json()) as ThirdPartyApiResponse;
-
-    return jsonResponse(data);
-  } catch (error) {
-    return jsonResponse({ message: "Oops! some error occurred." }, 500);
+    return jsonResponse({ message: API_ERROR.SERVER_INTERNAL_ERROR }, 500);
   }
 }

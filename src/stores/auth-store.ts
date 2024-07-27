@@ -1,7 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ERROR_LIST } from "@/utils/constants";
-import { ResponsePayload as LoginResponsePayload } from "@/app/api/signin/route";
+import { SigninResponsePayload as LoginResponsePayload } from "@/app/api/signin/route";
 
 type LoginParams = { email: string; password: string; isSignUp: boolean };
 
@@ -69,6 +69,8 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
 
               if (Object.keys(ERROR_LIST).includes(errorResPayload.message)) {
                 errorMessage = ERROR_LIST[errorResPayload.message];
+              } else if (errorResPayload.message) {
+                errorMessage = errorResPayload.message;
               }
 
               set({

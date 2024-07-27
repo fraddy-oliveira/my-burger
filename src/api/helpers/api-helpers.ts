@@ -1,4 +1,4 @@
-import { APIResponse } from "../types/response";
+import { APIResponse } from "../types/request-response";
 
 export const jsonResponse = <T, E = null>(
   responsePayload: APIResponse<T, E>,

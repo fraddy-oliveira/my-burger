@@ -11,6 +11,4 @@ export const ERROR_LIST = {
     "The password is invalid or the user does not have a password.",
   USER_DISABLED: "The user account has been disabled by an administrator.",
   INVALID_LOGIN_CREDENTIALS: "Email or password is incorrect.",
-  INVALID_SIGNUP_FORM: "Sign up form is invalid",
-  INVALID_LOGIN_FORM: "Login form is invalid",
 };

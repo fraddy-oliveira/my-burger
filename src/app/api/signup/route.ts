@@ -1,15 +1,21 @@
-import { ThirdPartyApiErrorResponse } from "@/api/types/response";
 import { jsonResponse } from "@/api/helpers/api-helpers";
 import { signupSchema } from "@/api/validation/signup-schema";
 import { ZodError } from "zod";
+import AuthService from "@/api/services/auth.service";
+import APIError from "@/api/utils/api-error";
+import { API_ERROR } from "@/api/utils/constants";
 
-type ThirdPartyApiResponse = {
+export type SignupFirebaseResponse = {
   idToken: string;
   localId: string;
   expiresIn: string;
 };
 
-type ResponsePayload = { idToken: string; localId: string; expiresIn: string };
+export type SignupResponsePayload = {
+  idToken: string;
+  localId: string;
+  expiresIn: string;
+};
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +32,7 @@ export async function POST(request: Request) {
 
         return jsonResponse(
           {
-            message: "INVALID_SIGNUP_FORM",
+            message: API_ERROR.AUTH_INVALID_SIGNUP_FORM,
             errors: errorMessages,
           },
           400
@@ -35,7 +41,7 @@ export async function POST(request: Request) {
 
       return jsonResponse(
         {
-          message: "Oops! some error occurred.",
+          message: API_ERROR.SERVER_INTERNAL_ERROR,
         },
         500
       );
@@ -47,26 +53,15 @@ export async function POST(request: Request) {
       returnSecureToken: true,
     };
 
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.FIREBASE_API_KEY}`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(requestPayload),
-    });
-
-    if (!response.ok) {
-      const {
-        error: { message, code },
-      } = (await response.json()) as ThirdPartyApiErrorResponse;
-
-      return jsonResponse({ message }, code);
+    return jsonResponse(await AuthService.signup(requestPayload));
+  } catch (error) {
+    if (error instanceof APIError) {
+      return jsonResponse(
+        { message: error.message, errorCode: error.errorCode },
+        error.statusCode
+      );
     }
 
-    const { idToken, localId, expiresIn } =
-      (await response.json()) as ThirdPartyApiResponse;
-
-    return jsonResponse<ResponsePayload>({ idToken, localId, expiresIn });
-  } catch (error) {
-    return jsonResponse({ message: "Oops! some error occurred." }, 500);
+    return jsonResponse({ message: API_ERROR.SERVER_INTERNAL_ERROR }, 500);
   }
 }

@@ -1,8 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 import { jsonResponse } from "@/api/helpers/api-helpers";
 import { AuthToken } from "@/api/types/auth-token.type";
+import OrderService from "@/api/services/order.service";
+import { API_ERROR } from "@/api/utils/constants";
+import APIError from "@/api/utils/api-error";
 
-type ThirdPartyApiResponse = Record<
+export type GetOrdersFirebaseResponse = Record<
   string,
   {
     customer: {
@@ -28,7 +31,7 @@ type CustomerResponseDto = {
   street: string;
 };
 
-type ResponsePayload = {
+export type GetOrdersResponsePayload = {
   customer: CustomerResponseDto;
   ingredients: { bacon: number; cheese: number; meat: number; salad: number };
   price: number;
@@ -42,7 +45,7 @@ export async function GET(request: Request) {
     if (!authToken) {
       return jsonResponse(
         {
-          message: "Please provide valid bearer token.",
+          message: API_ERROR.AUTH_INVALID_TOKEN,
         },
         401
       );
@@ -50,35 +53,26 @@ export async function GET(request: Request) {
 
     const tokenParse = jwtDecode(authToken) as AuthToken;
 
-    const response = await fetch(
-      `${process.env.FIREBASE_BASE_URL}/orders.json?auth=${authToken}`
-    );
-
-    if (!response.ok) {
-      const errorPayload = await response.json();
-
-      let message = "Failed to fetch Orders.";
-
-      if (response.status === 401) {
-        message = errorPayload.error;
-      }
-
-      return jsonResponse({ message }, response.status);
+    if (!tokenParse.user_id) {
+      return jsonResponse(
+        {
+          message: API_ERROR.AUTH_INVALID_TOKEN,
+        },
+        401
+      );
     }
 
-    const data = (await response.json()) as ThirdPartyApiResponse;
-
-    const orders = Object.keys(data)
-      .map((key) => ({
-        customer: data[key]["customer"],
-        ingredients: data[key]["ingredients"],
-        price: data[key]["price"],
-        user_id: data[key]["user_id"],
-      }))
-      .filter((o) => o.user_id === tokenParse.user_id);
-
-    return jsonResponse<ResponsePayload>(orders);
+    return jsonResponse(
+      await OrderService.getOrders(authToken, tokenParse.user_id)
+    );
   } catch (error) {
-    return jsonResponse({ message: "Oops! some error occurred." }, 500);
+    if (error instanceof APIError) {
+      return jsonResponse(
+        { message: error.message, errorCode: error.errorCode },
+        error.statusCode
+      );
+    }
+
+    return jsonResponse({ message: API_ERROR.SERVER_INTERNAL_ERROR }, 500);
   }
 }
