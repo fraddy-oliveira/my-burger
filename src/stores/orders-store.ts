@@ -48,7 +48,7 @@ export const createOrdersStore = (
         purchaseBurgerInit: () => set({ purchased: false }),
         purchaseBurger: async (purchaseBurgerData) => {
           try {
-            let url = `/api/order`;
+            let url = `/api/create-order`;
 
             set({ loading: true, error: "" });
 
