@@ -3,27 +3,28 @@ import { ZodError, z } from "zod";
 import { jsonResponse } from "@/api/helpers/api-helpers";
 import { createOrderSchema } from "@/api/validation/create-order-schema";
 import { AuthToken } from "@/api/types/auth-token.type";
+import APIError from "@/api/utils/api-error";
+import { API_ERROR } from "@/api/utils/constants";
+import OrderService from "@/api/services/order.service";
 
-type RequestPayload = z.infer<typeof createOrderSchema>;
+export type CreateOrderRequestPayload = z.infer<typeof createOrderSchema>;
 
-type ResponsePayload = { name: string };
+export type CreateOrderResponsePayload = { name: string };
 
-type ThirdPartyApiResponse = { name: string };
-
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
   try {
     const authToken = request.headers.get("auth-token");
 
     if (!authToken) {
       return jsonResponse(
         {
-          message: "Please provide valid bearer token.",
+          message: API_ERROR.AUTH_INVALID_TOKEN,
         },
         401
       );
     }
 
-    const requestPayload = (await request.json()) as RequestPayload;
+    const requestPayload = (await request.json()) as CreateOrderRequestPayload;
 
     try {
       createOrderSchema.parse(requestPayload);
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
         return jsonResponse(
           {
-            message: "Create order payload is invalid",
+            message: API_ERROR.ORDER_INVALID_CREATE_ORDER_PAYLOAD,
             errors: errorMessages,
           },
           400
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
 
       return jsonResponse(
         {
-          message: "Oops! some error occurred.",
+          message: API_ERROR.SERVER_INTERNAL_ERROR,
         },
         500
       );
@@ -56,44 +57,27 @@ export async function POST(request: Request) {
     if (!tokenParse.user_id) {
       return jsonResponse(
         {
-          message: "Bearer token not formed properly. user_id not found.",
+          message: API_ERROR.AUTH_INVALID_TOKEN,
         },
         401
       );
     }
 
-    const url = `${process.env.FIREBASE_BASE_URL}/orders.json?auth=${authToken}`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        customer: {
-          country: requestPayload.customer?.country,
-          deliveryMethod: requestPayload.customer?.deliveryMethod,
-          email: requestPayload.customer?.email,
-          name: requestPayload.customer?.name,
-          postalCode: requestPayload.customer?.postalCode,
-          street: requestPayload.customer?.street,
-        },
-        ingredients: {
-          bacon: requestPayload.ingredients?.bacon,
-          cheese: requestPayload.ingredients?.cheese,
-          meat: requestPayload.ingredients?.meat,
-          salad: requestPayload.ingredients?.salad,
-        },
-        price: requestPayload.price,
-        user_id: tokenParse.user_id,
-      }),
-    });
-
-    if (!response.ok) {
-      return jsonResponse({ message: "Create order failed" }, response.status);
+    return jsonResponse(
+      await OrderService.createOrder(
+        authToken,
+        tokenParse.user_id,
+        requestPayload
+      )
+    );
+  } catch (error) {
+    if (error instanceof APIError) {
+      return jsonResponse(
+        { message: error.message, errorCode: error.errorCode },
+        error.statusCode
+      );
     }
 
-    const { name } = (await response.json()) as ThirdPartyApiResponse;
-
-    return jsonResponse<ResponsePayload>({ name });
-  } catch (error) {
-    return jsonResponse({ message: "Oops! some error occurred." }, 500);
+    return jsonResponse({ message: API_ERROR.SERVER_INTERNAL_ERROR }, 500);
   }
 }

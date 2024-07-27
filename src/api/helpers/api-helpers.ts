@@ -1,5 +1,10 @@
-export const jsonResponse = <T>(responsePayload: T, status: number = 200) => {
-  return new Response(
+import { APIResponse } from "../types/response";
+
+export const jsonResponse = <T, E = null>(
+  responsePayload: APIResponse<T, E>,
+  status: number = 200
+) =>
+  new Response(
     responsePayload !== null ? JSON.stringify(responsePayload) : null,
     {
       status,
@@ -8,4 +13,3 @@ export const jsonResponse = <T>(responsePayload: T, status: number = 200) => {
       },
     }
   );
-};
