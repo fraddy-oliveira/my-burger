@@ -9,7 +9,7 @@ type ThirdPartyApiResponse = {
   expiresIn: string;
 };
 
-type ResponsePayload = { idToken: string; localId: string; expiresIn: string };
+export type ResponsePayload = { idToken: string; localId: string; expiresIn: string };
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
         return jsonResponse(
           {
-            message: "Login form is invalid",
+            message: 'INVALID_LOGIN_FORM',
             errors: errorMessages,
           },
           400

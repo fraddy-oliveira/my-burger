@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
         return jsonResponse(
           {
-            message: "Sign up form is invalid",
+            message: "INVALID_SIGNUP_FORM",
             errors: errorMessages,
           },
           400
