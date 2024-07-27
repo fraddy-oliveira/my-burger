@@ -6,7 +6,7 @@ export const fetchOrders = async (
   token: string
 ): Promise<StandardResponse<Orders[]>> => {
   try {
-    let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/order`;
+    let url = `/api/order`;
 
     const response = await fetch(url, {
       method: "GET",
