@@ -4,22 +4,13 @@ Can create a Burger with different ingredients. There is a checkout functionalit
 
 Developed using React.js
 
-## Set up development environment
+## How to set up development environment
 
 ### Prerequisite
 
-- Node.js version 10.15.3
-- Docker
 - GCP account
 - Create API key from GCP Identity Platform
 - Create Realtime Database in firebase
-
-### Note
-
-I recommend to run project using docker because of Node version is bit older.
-
-- Create `.env.development.local` in root directory.
-  - `NEXT_PUBLIC_FEATURE_WEB_ANALYTICS` is to enable/disable analytics `enabled/disabled`
 - In realtime database, add `ingredients` key with following value:
   ```json
   {
@@ -29,7 +20,52 @@ I recommend to run project using docker because of Node version is bit older.
     "salad": 0
   }
   ```
-- Run app from root directory with command `docker-compose up -d`.
+
+### Run the burger app using docker
+
+#### Note
+
+- Install Docker and Docker Compose
+
+#### Steps
+
+- Clone the repository using git clone `git clone https://github.com/fraddy-oliveira/my-burger.git my-burger`.
+- Navigate to the project's root directory.
+- Create env file `.env.development.local` with following content.
+
+```sh
+NODE_ENV=development
+WEB_ANALYTICS_TOKEN="dummy_token_dev"
+FIREBASE_BASE_URL=https://my-burger-app.firebaseio.com  # dummy URL. Get this value from Firebase
+FIREBASE_API_KEY=a6oGYtjE4Wvidb42twkEYFtWdGe3afPLI5XOxkS  # dummy API key. Get this value from GCP Identity Platform
+```
+
+- Run the command `docker-compose up -d` to start the entire application.
+- Access the frontend at `http://localhost:3000`.
+- Access the backend API at `http://localhost:3000/api/health`.
+
+### Run app from terminal
+
+#### Note
+
+- Install Node.js version greater than 18.20
+
+#### Steps
+
+- Clone the repository using git clone `git clone https://github.com/fraddy-oliveira/my-burger.git my-burger`.
+- Create env file `.env.development.local` with following content.
+
+```sh
+NODE_ENV=development
+WEB_ANALYTICS_TOKEN="dummy_token_dev"
+FIREBASE_BASE_URL=https://my-burger-app.firebaseio.com  # dummy URL. Get this value from Firebase
+FIREBASE_API_KEY=a6oGYtjE4Wvidb42twkEYFtWdGe3afPLI5XOxkS  # dummy API key. Get this value from GCP Identity Platform
+```
+
+- Run the command `npm install` to install.
+- Run the command `npm run dev` to start the entire application.
+- Access the frontend at `http://localhost:3000`.
+- Access the backend API at `http://localhost:3000/api/health`.
 
 ## Authors
 
@@ -38,9 +74,3 @@ I recommend to run project using docker because of Node version is bit older.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
