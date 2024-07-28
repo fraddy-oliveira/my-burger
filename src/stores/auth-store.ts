@@ -1,5 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { ERROR_LIST } from "@/utils/constants";
+import { SigninResponsePayload as LoginResponsePayload } from "@/app/api/signin/route";
 
 type LoginParams = { email: string; password: string; isSignUp: boolean };
 
@@ -37,10 +39,10 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
         logout: () =>
           set({ token: null, userId: null, loading: false, error: null }),
         login: async (requestPayload) => {
-          let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/signup`;
+          let url = `/api/signup`;
 
           if (!requestPayload.isSignUp) {
-            url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/signin`;
+            url = `/api/signin`;
           }
 
           set({ loading: true, error: null });
@@ -59,29 +61,42 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
             });
 
             if (!response.ok) {
-              const errorResPayload = await response.json();
+              const errorResPayload = (await response.json()) as {
+                message: keyof typeof ERROR_LIST;
+              };
+
+              let errorMessage = "Some error occurred";
+
+              if (Object.keys(ERROR_LIST).includes(errorResPayload.message)) {
+                errorMessage = ERROR_LIST[errorResPayload.message];
+              } else if (errorResPayload.message) {
+                errorMessage = errorResPayload.message;
+              }
 
               set({
-                error: (errorResPayload as any).error.message,
+                error: errorMessage,
               });
 
               return;
             }
 
-            const responsePayload = await response.json();
+            const responsePayload =
+              (await response.json()) as LoginResponsePayload;
 
             set({
               token: responsePayload.idToken,
               userId: responsePayload.localId,
-              loading: false,
               expiresDate: new Date(
-                new Date().getTime() + responsePayload.expiresIn * 1000
+                new Date().getTime() + Number(responsePayload.expiresIn) * 1000
               ).toISOString(),
             });
             //  TODO: authExpirationTime action exited here
           } catch (error) {
             set({
               error: "Some error occurred",
+            });
+          } finally {
+            set({
               loading: false,
             });
           }

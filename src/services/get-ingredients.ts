@@ -5,7 +5,7 @@ export const getIngredients = async (): Promise<
   StandardResponse<Ingredients>
 > => {
   try {
-    let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/ingredients`;
+    let url = `/api/ingredients`;
 
     const response = await fetch(url);
 

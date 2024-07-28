@@ -48,7 +48,7 @@ export const createOrdersStore = (
         purchaseBurgerInit: () => set({ purchased: false }),
         purchaseBurger: async (purchaseBurgerData) => {
           try {
-            let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/order`;
+            let url = `/api/create-order`;
 
             set({ loading: true, error: "" });
 
@@ -81,7 +81,7 @@ export const createOrdersStore = (
         },
         fetchOrders: async (token) => {
           try {
-            let url = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/order`;
+            let url = `/api/order`;
 
             set({ loading: true, error: "" });
 
